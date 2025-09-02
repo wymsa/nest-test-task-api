@@ -1,0 +1,2 @@
+ALTER TABLE "notes" ADD COLUMN "owner_id" integer NOT NULL;--> statement-breakpoint
+ALTER TABLE "notes" ADD CONSTRAINT "notes_owner_id_users_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE cascade;

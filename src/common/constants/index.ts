@@ -1,0 +1,3 @@
+export const DATABASE_PROVIDER_KEY = 'DatabaseConnection'
+export const USERS_REPOSITORY_KEY = 'USERS_REPOSITORY'
+export const NOTES_REPOSITORY_KEY = 'NOTES_REPOSITORY'

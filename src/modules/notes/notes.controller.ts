@@ -13,9 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Roles } from 'src/common/decorators/admin-required.decorator'
+import { Roles } from 'src/common/decorators/roles.decorator'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
 import { NoteOwnerGuard } from 'src/common/guards/note-owner.guard'
 import { RoleGuard } from 'src/common/guards/role.guard'
 import { RequestUser } from 'src/common/types'
@@ -27,7 +26,7 @@ import { NotesService } from 'src/modules/notes/notes.service'
 @ApiTags('Notes')
 @ApiBearerAuth()
 @Controller('notes')
-@UseGuards(JwtAuthGuard, RoleGuard)
+@UseGuards(RoleGuard)
 export class NotesController {
   constructor(private readonly _notesService: NotesService) {}
 
@@ -55,24 +54,24 @@ export class NotesController {
   @ApiOperation({ summary: 'Get all notes' })
   @Get()
   @Roles('ADMIN', 'USER')
-  async getAll(
+  async findAll(
     @Query() FilterNotesDto: FilterNotesDto,
     @CurrentUser() user: RequestUser,
   ) {
     const { userID, role } = user
     if (role === 'ADMIN') {
-      return await this._notesService.getAll(FilterNotesDto)
+      return await this._notesService.findAll(FilterNotesDto)
     }
 
-    return await this._notesService.getAll(FilterNotesDto, userID)
+    return await this._notesService.findAll(FilterNotesDto, userID)
   }
 
   @ApiOperation({ summary: 'Get one note' })
   @Get(':noteID')
   @Roles('ADMIN', 'USER')
   @UseGuards(NoteOwnerGuard)
-  async getOneByID(@Param('noteID', ParseIntPipe) noteID: number) {
-    return await this._notesService.getOneByID(noteID)
+  async findOneByID(@Param('noteID', ParseIntPipe) noteID: number) {
+    return await this._notesService.findOneByID(noteID)
   }
 
   @ApiOperation({ summary: 'Delete note' })
@@ -80,7 +79,7 @@ export class NotesController {
   @Roles('ADMIN', 'USER')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(NoteOwnerGuard)
-  async delete(@Param('noteID', ParseIntPipe) noteID: number) {
-    return await this._notesService.delete(noteID)
+  async remove(@Param('noteID', ParseIntPipe) noteID: number) {
+    return await this._notesService.remove(noteID)
   }
 }

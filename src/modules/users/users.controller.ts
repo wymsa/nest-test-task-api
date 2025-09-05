@@ -13,8 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Roles } from 'src/common/decorators/admin-required.decorator'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
+import { Roles } from 'src/common/decorators/roles.decorator'
 import { OwnerGuard } from 'src/common/guards/owner.guard'
 import { RoleGuard } from 'src/common/guards/role.guard'
 import { statusEnum } from 'src/database/schemas'
@@ -26,7 +25,7 @@ import { UsersService } from 'src/modules/users/users.service'
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
-@UseGuards(JwtAuthGuard, RoleGuard)
+@UseGuards(RoleGuard)
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
@@ -69,16 +68,16 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users' })
   @Get()
   @Roles('ADMIN')
-  async getAll(@Query() filterUsersDto: FilterUsersDto) {
-    return await this._usersService.getAll(filterUsersDto)
+  async findAll(@Query() filterUsersDto: FilterUsersDto) {
+    return await this._usersService.findAll(filterUsersDto)
   }
 
   @ApiOperation({ summary: 'Get one user' })
   @Get(':userID')
   @Roles('ADMIN', 'USER')
   @UseGuards(OwnerGuard)
-  async getOneByID(@Param('userID', ParseIntPipe) userID: number) {
-    return await this._usersService.getOneByID(userID)
+  async findOneByID(@Param('userID', ParseIntPipe) userID: number) {
+    return await this._usersService.findOneByID(userID)
   }
 
   @ApiOperation({ summary: 'Delete user' })
@@ -86,7 +85,7 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Roles('ADMIN', 'USER')
   @UseGuards(OwnerGuard)
-  async delete(@Param('userID', ParseIntPipe) userID: number) {
-    return await this._usersService.delete(userID)
+  async remove(@Param('userID', ParseIntPipe) userID: number) {
+    return await this._usersService.remove(userID)
   }
 }

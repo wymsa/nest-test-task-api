@@ -38,7 +38,7 @@ export class AuthService {
 
     if (signInUserDto) {
       const { username, password } = signInUserDto
-      foundUser = await this._usersService.getOneByUsername(username)
+      foundUser = await this._usersService.findOneByUsername(username)
 
       const isPasswordValid = await comparePassword(
         password,
@@ -48,7 +48,7 @@ export class AuthService {
         throw new UnauthorizedException()
       }
     } else if (userID) {
-      foundUser = await this._usersService.getOneByID(userID)
+      foundUser = await this._usersService.findOneByID(userID)
     }
 
     if (foundUser.status === 'BLOCKED') throw new UnauthorizedException()

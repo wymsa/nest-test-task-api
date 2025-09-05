@@ -49,8 +49,8 @@ export class NotesService {
     return updatedNote.data
   }
 
-  async delete(noteID: number): Promise<NotesEntity> {
-    const deletedNote = await this._notesRepository.delete(noteID)
+  async remove(noteID: number): Promise<NotesEntity> {
+    const deletedNote = await this._notesRepository.remove(noteID)
     if (deletedNote.success === false)
       throw new HttpException(deletedNote.error, 400)
 
@@ -58,27 +58,22 @@ export class NotesService {
     return deletedNote.data
   }
 
-  async getAll(
+  async findAll(
     filterNotesDto: FilterNotesDto,
     userID?: number,
   ): Promise<NotesEntity[]> {
-    const foundNotes = await this._notesRepository.getAll(
-      filterNotesDto,
-      userID,
-    )
-    if (foundNotes.success === false)
-      throw new HttpException(foundNotes.error, 400)
+    const notes = await this._notesRepository.findAll(filterNotesDto, userID)
+    if (notes.success === false) throw new HttpException(notes.error, 400)
 
     this._logger.log('Notes received')
-    return foundNotes.data
+    return notes.data
   }
 
-  async getOneByID(noteID: number, userID?: number): Promise<NotesEntity> {
-    const foundNote = await this._notesRepository.getOneByID(noteID, userID)
-    if (foundNote.success === false)
-      throw new HttpException(foundNote.error, 400)
+  async findOneByID(noteID: number, userID?: number): Promise<NotesEntity> {
+    const note = await this._notesRepository.findOneByID(noteID, userID)
+    if (note.success === false) throw new HttpException(note.error, 400)
 
     this._logger.log(`Note ${noteID} received`)
-    return foundNote.data
+    return note.data
   }
 }

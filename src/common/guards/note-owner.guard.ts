@@ -11,7 +11,7 @@ export class NoteOwnerGuard implements CanActivate {
     const user = request.user
     const resourceNoteID = request.params.noteID
 
-    const foundNote = await this._notesService.getOneByID(
+    const foundNote = await this._notesService.findOneByID(
       Number(resourceNoteID),
     )
 

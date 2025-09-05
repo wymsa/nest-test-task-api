@@ -54,9 +54,9 @@ export class UsersRepository
   ): Promise<Result<UserEntity>> {
     const { username, password, role, status } = updateUserDto
 
-    const foundUser = await this.getOneByID(userID)
-    if (foundUser.success === false) {
-      return fail(foundUser.error)
+    const user = await this.findOneByID(userID)
+    if (user.success === false) {
+      return fail(user.error)
     }
 
     const setData = Object.fromEntries(
@@ -65,14 +65,14 @@ export class UsersRepository
     if (Object.keys(setData).length === 0) {
       return ok(
         new UserEntity(
-          foundUser.data.id,
-          foundUser.data.username,
-          foundUser.data.password,
-          foundUser.data.role,
-          foundUser.data.status,
-          foundUser.data.createdAt,
-          foundUser.data.updatedAt,
-          foundUser.data.notes,
+          user.data.id,
+          user.data.username,
+          user.data.password,
+          user.data.role,
+          user.data.status,
+          user.data.createdAt,
+          user.data.updatedAt,
+          user.data.notes,
         ),
       )
     }
@@ -97,15 +97,15 @@ export class UsersRepository
         updatedUser[0].status,
         updatedUser[0].createdAt,
         updatedUser[0].updatedAt,
-        foundUser.data.notes,
+        user.data.notes,
       ),
     )
   }
 
-  async delete(userID: number): Promise<Result<UserEntity>> {
-    const foundUser = await this.getOneByID(userID)
-    if (foundUser.success === false) {
-      return fail(foundUser.error)
+  async remove(userID: number): Promise<Result<UserEntity>> {
+    const user = await this.findOneByID(userID)
+    if (user.success === false) {
+      return fail(user.error)
     }
 
     const deletedUser = await this._database
@@ -122,12 +122,12 @@ export class UsersRepository
         deletedUser[0].status,
         deletedUser[0].createdAt,
         deletedUser[0].updatedAt,
-        foundUser.data.notes,
+        user.data.notes,
       ),
     )
   }
 
-  async getAll(filterUsersDto: FilterUsersDto): Promise<Result<UserEntity[]>> {
+  async findAll(filterUsersDto: FilterUsersDto): Promise<Result<UserEntity[]>> {
     const { username, status } = filterUsersDto
 
     const filters: SQLWrapper[] = []
@@ -138,30 +138,30 @@ export class UsersRepository
       filters.push(eq(schemas.usersSchema.status, status))
     }
 
-    const foundUsers = await this._database.query.usersSchema.findMany({
+    const users = await this._database.query.usersSchema.findMany({
       where: and(...filters),
       with: {
         notes: true,
       },
     })
 
-    const foramttedResult = foundUsers.map(foundUser => {
+    const foramttedResult = users.map(user => {
       return new UserEntity(
-        foundUser.id,
-        foundUser.username,
-        foundUser.password,
-        foundUser.role,
-        foundUser.status,
-        foundUser.createdAt,
-        foundUser.updatedAt,
-        foundUser.notes.map(note => {
+        user.id,
+        user.username,
+        user.password,
+        user.role,
+        user.status,
+        user.createdAt,
+        user.updatedAt,
+        user.notes.map(note => {
           return new NotesEntity(
             note.id,
             note.title,
             note.content,
             note.createdAt,
             note.updatedAt,
-            foundUser.id,
+            user.id,
           )
         }),
       )
@@ -170,27 +170,27 @@ export class UsersRepository
     return ok(foramttedResult)
   }
 
-  async getOneByID(userID: number): Promise<Result<UserEntity>> {
-    const foundUser = await this._database.query.usersSchema.findFirst({
+  async findOneByID(userID: number): Promise<Result<UserEntity>> {
+    const user = await this._database.query.usersSchema.findFirst({
       where: eq(schemas.usersSchema.id, userID),
       with: {
         notes: true,
       },
     })
 
-    if (!foundUser) {
+    if (!user) {
       return fail(`User with ID: ${userID} not found`)
     }
 
     const formattedResult = new UserEntity(
-      foundUser.id,
-      foundUser.username,
-      foundUser.password,
-      foundUser.role,
-      foundUser.status,
-      foundUser.createdAt,
-      foundUser.updatedAt,
-      foundUser.notes.map(
+      user.id,
+      user.username,
+      user.password,
+      user.role,
+      user.status,
+      user.createdAt,
+      user.updatedAt,
+      user.notes.map(
         note =>
           new NotesEntity(
             note.id,
@@ -198,7 +198,7 @@ export class UsersRepository
             note.content,
             note.createdAt,
             note.updatedAt,
-            foundUser.id,
+            user.id,
           ),
       ),
     )
@@ -206,25 +206,25 @@ export class UsersRepository
     return ok(formattedResult)
   }
 
-  async getOneByUsername(username: string): Promise<Result<UserEntity>> {
-    const foundUser = await this._database.query.usersSchema.findFirst({
+  async findOneByUsername(username: string): Promise<Result<UserEntity>> {
+    const user = await this._database.query.usersSchema.findFirst({
       where: eq(schemas.usersSchema.username, username),
       with: { notes: true },
     })
 
-    if (!foundUser) {
+    if (!user) {
       return fail(`User with username: ${username} not found`)
     }
 
     const formattedResult = new UserEntity(
-      foundUser.id,
-      foundUser.username,
-      foundUser.password,
-      foundUser.role,
-      foundUser.status,
-      foundUser.createdAt,
-      foundUser.updatedAt,
-      foundUser.notes.map(
+      user.id,
+      user.username,
+      user.password,
+      user.role,
+      user.status,
+      user.createdAt,
+      user.updatedAt,
+      user.notes.map(
         note =>
           new NotesEntity(
             note.id,
@@ -232,7 +232,7 @@ export class UsersRepository
             note.content,
             note.createdAt,
             note.updatedAt,
-            foundUser.id,
+            user.id,
           ),
       ),
     )

@@ -55,8 +55,8 @@ export class UsersService {
     return updatedUser.data
   }
 
-  async delete(userID: number): Promise<UserEntity> {
-    const deletedUser = await this._usersRepository.delete(userID)
+  async remove(userID: number): Promise<UserEntity> {
+    const deletedUser = await this._usersRepository.remove(userID)
     if (deletedUser.success === false)
       throw new HttpException(deletedUser.error, 400)
 
@@ -64,30 +64,28 @@ export class UsersService {
     return deletedUser.data
   }
 
-  async getAll(filterUsersDto: FilterUsersDto): Promise<UserEntity[]> {
-    const foundUsers = await this._usersRepository.getAll(filterUsersDto)
-    if (foundUsers.success === false)
-      throw new HttpException(foundUsers.error, 400)
+  async findAll(filterUsersDto: FilterUsersDto): Promise<UserEntity[]> {
+    const users = await this._usersRepository.findAll(filterUsersDto)
+    if (users.success === false) throw new HttpException(users.error, 400)
 
     this._logger.log(`Users received`)
-    return foundUsers.data
+    return users.data
   }
 
-  async getOneByID(userID: number): Promise<UserEntity> {
-    const foundUser = await this._usersRepository.getOneByID(userID)
-    if (foundUser.success === false)
-      throw new HttpException(foundUser.error, 400)
+  async findOneByID(userID: number): Promise<UserEntity> {
+    const user = await this._usersRepository.findOneByID(userID)
+    if (user.success === false) throw new HttpException(user.error, 400)
 
     this._logger.log(`User ${userID} received`)
-    return foundUser.data
+    return user.data
   }
 
-  async getOneByUsername(username: string): Promise<UserEntity> {
-    const foundUser = await this._usersRepository.getOneByUsername(username)
+  async findOneByUsername(username: string): Promise<UserEntity> {
+    const user = await this._usersRepository.findOneByUsername(username)
 
-    if (foundUser.success === false) throw new UnauthorizedException()
+    if (user.success === false) throw new UnauthorizedException()
 
     this._logger.log(`User ${username} received`)
-    return foundUser.data
+    return user.data
   }
 }

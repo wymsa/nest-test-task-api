@@ -20,6 +20,9 @@ export class NotesRepository
     @Inject(DATABASE_PROVIDER_KEY)
     private readonly _database: NodePgDatabase<typeof schemas>,
   ) {}
+  findOne(noteID: number, userID?: number): Promise<Result<NotesEntity>> {
+    throw new Error('Method not implemented.')
+  }
   async create(
     createNoteDto: CreateNoteDto,
     userID: number,
@@ -53,9 +56,9 @@ export class NotesRepository
   ): Promise<Result<NotesEntity>> {
     const { title, content } = updateNoteDto
 
-    const foundNote = await this.getOneByID(noteID)
-    if (foundNote.success === false) {
-      return fail(foundNote.error)
+    const note = await this.findOneByID(noteID)
+    if (note.success === false) {
+      return fail(note.error)
     }
 
     const setData = Object.fromEntries(
@@ -64,12 +67,12 @@ export class NotesRepository
     if (Object.keys(setData).length === 0) {
       return ok(
         new NotesEntity(
-          foundNote.data.id,
-          foundNote.data.title,
-          foundNote.data.content,
-          foundNote.data.createdAt,
-          foundNote.data.updatedAt,
-          foundNote.data.ownerID,
+          note.data.id,
+          note.data.title,
+          note.data.content,
+          note.data.createdAt,
+          note.data.updatedAt,
+          note.data.ownerID,
         ),
       )
     }
@@ -95,10 +98,10 @@ export class NotesRepository
     )
   }
 
-  async delete(noteID: number): Promise<Result<NotesEntity>> {
-    const foundNote = await this.getOneByID(noteID)
-    if (foundNote.success === false) {
-      return fail(foundNote.error)
+  async remove(noteID: number): Promise<Result<NotesEntity>> {
+    const note = await this.findOneByID(noteID)
+    if (note.success === false) {
+      return fail(note.error)
     }
 
     const deletedNote = await this._database
@@ -118,13 +121,13 @@ export class NotesRepository
     )
   }
 
-  async getAll(
+  async findAll(
     filterNotesDto: FilterNotesDto,
     userID?: number,
   ): Promise<Result<NotesEntity[]>> {
     const { limit = 10, page = 1 } = filterNotesDto
 
-    const foundNotes = await this._database.query.notesSchema.findMany({
+    const notes = await this._database.query.notesSchema.findMany({
       ...(userID != null
         ? { where: eq(schemas.notesSchema.ownerId, userID) }
         : {}),
@@ -133,25 +136,25 @@ export class NotesRepository
     })
 
     return ok(
-      foundNotes.map(
-        foundNote =>
+      notes.map(
+        note =>
           new NotesEntity(
-            foundNote.id,
-            foundNote.title,
-            foundNote.content,
-            foundNote.createdAt,
-            foundNote.updatedAt,
-            foundNote.ownerId,
+            note.id,
+            note.title,
+            note.content,
+            note.createdAt,
+            note.updatedAt,
+            note.ownerId,
           ),
       ),
     )
   }
 
-  async getOneByID(
+  async findOneByID(
     noteID: number,
     userID?: number,
   ): Promise<Result<NotesEntity>> {
-    const foundNote = await this._database.query.notesSchema.findFirst({
+    const note = await this._database.query.notesSchema.findFirst({
       ...(userID != null
         ? {
             where: and(
@@ -162,7 +165,7 @@ export class NotesRepository
         : { where: eq(schemas.notesSchema.id, noteID) }),
     })
 
-    if (!foundNote) {
+    if (!note) {
       return fail(
         `Note with ID: ${noteID}${userID != null ? ` and user ID: ${userID}` : ''} not found`,
       )
@@ -170,12 +173,12 @@ export class NotesRepository
 
     return ok(
       new NotesEntity(
-        foundNote.id,
-        foundNote.title,
-        foundNote.content,
-        foundNote.createdAt,
-        foundNote.updatedAt,
-        foundNote.ownerId,
+        note.id,
+        note.title,
+        note.content,
+        note.createdAt,
+        note.updatedAt,
+        note.ownerId,
       ),
     )
   }

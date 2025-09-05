@@ -2,6 +2,7 @@ import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
+import { Public } from 'src/common/decorators/public.decorator'
 import { LocaAuthGuard } from 'src/common/guards/local-auth.guard'
 import { RequestUser } from 'src/common/types'
 import { AuthService } from 'src/modules/auth/auth.service'
@@ -13,11 +14,13 @@ import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto'
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
+  @Public()
   @Post('sign-up')
   async signUp(@Body() createUserDto: CreateUserDto) {
     return await this._authService.signUp(createUserDto)
   }
 
+  @Public()
   @Post('sign-in')
   @UseGuards(LocaAuthGuard)
   async signIn(

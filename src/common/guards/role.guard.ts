@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { Observable } from 'rxjs'
-import { ROLES_KEY } from 'src/common/decorators/admin-required.decorator'
+import { ROLES_KEY } from 'src/common/decorators/roles.decorator'
 import { UserRole } from 'src/common/types'
 
 @Injectable()
@@ -11,18 +11,16 @@ export class RoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const requiredRoles = this._reflector.getAllAndOverride<UserRole[]>(
-      ROLES_KEY,
-      [context.getClass(), context.getHandler()],
-    )
+    const roles = this._reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
+      context.getClass(),
+      context.getHandler(),
+    ])
 
     const request = context.switchToHttp().getRequest<Request>()
 
-    if (!requiredRoles) return true
+    if (!roles) return true
 
-    if (!request.user) return false
-
-    if (!requiredRoles.includes(request.user.role)) return false
+    if (!roles.includes(request.user.role)) return false
 
     return true
   }

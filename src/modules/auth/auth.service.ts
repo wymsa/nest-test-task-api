@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from 'src/common/types'
 import { comparePassword } from 'src/common/utils'

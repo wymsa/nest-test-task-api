@@ -1,8 +1,8 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
-import { LocaAuthlGuard } from 'src/common/guards/local.guard'
+import { LocaAuthGuard } from 'src/common/guards/local-auth.guard'
 import { RequestUser } from 'src/common/types'
 import { AuthService } from 'src/modules/auth/auth.service'
 import { SignInUserDto } from 'src/modules/auth/dtos/sign-in.dto'
@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @Post('sign-in')
-  @UseGuards(LocaAuthlGuard)
+  @UseGuards(LocaAuthGuard)
   async signIn(
     @Body() signInDto: SignInUserDto,
     @Res({ passthrough: true }) response: Response,

@@ -1,10 +1,8 @@
 import {
   HttpException,
-  HttpStatus,
   Inject,
   Injectable,
   Logger,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto'

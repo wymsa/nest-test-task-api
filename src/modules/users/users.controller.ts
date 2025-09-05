@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseEnumPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -15,7 +14,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/common/decorators/admin-required.decorator'
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard'
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
 import { OwnerGuard } from 'src/common/guards/owner.guard'
 import { RoleGuard } from 'src/common/guards/role.guard'
 import { statusEnum } from 'src/database/schemas'

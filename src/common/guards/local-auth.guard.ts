@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport'
 import { Observable } from 'rxjs'
 
 @Injectable()
-export class LocaAuthlGuard extends AuthGuard('local') {
+export class LocaAuthGuard extends AuthGuard('local') {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {

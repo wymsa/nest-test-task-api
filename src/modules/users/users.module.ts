@@ -4,8 +4,6 @@ import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { USERS_REPOSITORY_KEY } from 'src/common/constants'
 import { UsersRepository } from 'src/modules/users/users.repository'
-import { APP_GUARD } from '@nestjs/core'
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard'
 
 @Module({
   imports: [DatabaseModule],

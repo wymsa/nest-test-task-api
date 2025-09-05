@@ -13,8 +13,6 @@ export class DrizzleQueryErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
 
-    console.log(exception)
-
     const pgErrorCode = (exception as any).cause.code
     const errorResponse = {
       error: 'Unknown error',

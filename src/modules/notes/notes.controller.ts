@@ -15,7 +15,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/common/decorators/admin-required.decorator'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard'
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
 import { NoteOwnerGuard } from 'src/common/guards/note-owner.guard'
 import { RoleGuard } from 'src/common/guards/role.guard'
 import { RequestUser } from 'src/common/types'

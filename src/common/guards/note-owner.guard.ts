@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
-import { Observable } from 'rxjs'
 import { NotesService } from 'src/modules/notes/notes.service'
 
 @Injectable()
@@ -19,8 +18,6 @@ export class NoteOwnerGuard implements CanActivate {
     if (user.role === 'ADMIN') return true
 
     if (foundNote.ownerID !== user.userID) return false
-
-    console.log('resourceNoteID')
 
     return false
   }

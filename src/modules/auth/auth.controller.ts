@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { CurrentUser } from 'src/common/decorators/current-user.decorator'
 import { Public } from 'src/common/decorators/public.decorator'
-import { LocaAuthGuard } from 'src/common/guards/local-auth.guard'
+import { LocalAuthGuard } from 'src/common/guards/local-auth.guard'
 import { RequestUser } from 'src/common/types'
 import { AuthService } from 'src/modules/auth/auth.service'
 import { SignInUserDto } from 'src/modules/auth/dtos/sign-in.dto'
@@ -22,7 +22,7 @@ export class AuthController {
 
   @Public()
   @Post('sign-in')
-  @UseGuards(LocaAuthGuard)
+  @UseGuards(LocalAuthGuard)
   async signIn(
     @Body() signInDto: SignInUserDto,
     @Res({ passthrough: true }) response: Response,

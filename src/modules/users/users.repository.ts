@@ -145,7 +145,7 @@ export class UsersRepository
       },
     })
 
-    const foramttedResult = users.map(user => {
+    const formattedResult = users.map(user => {
       return new UserEntity(
         user.id,
         user.username,
@@ -167,7 +167,7 @@ export class UsersRepository
       )
     })
 
-    return ok(foramttedResult)
+    return ok(formattedResult)
   }
 
   async findOneByID(userID: number): Promise<Result<UserEntity>> {

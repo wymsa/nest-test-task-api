@@ -16,7 +16,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Roles } from 'src/common/decorators/roles.decorator'
 import { OwnerGuard } from 'src/common/guards/owner.guard'
 import { RoleGuard } from 'src/common/guards/role.guard'
-import { statusEnum } from 'src/database/schemas'
+import { UserStatusEnum } from 'src/common/types/enums'
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto'
 import { FilterUsersDto } from 'src/modules/users/dtos/filter-users.dto'
 import { UpdateUserDto } from 'src/modules/users/dtos/update-user.dto'
@@ -52,7 +52,7 @@ export class UsersController {
   @Roles('ADMIN')
   async block(@Param('userID', ParseIntPipe) userID: number) {
     return await this._usersService.update(userID, {
-      status: statusEnum.enumValues[1],
+      status: UserStatusEnum.BLOCKED,
     })
   }
 
@@ -61,7 +61,7 @@ export class UsersController {
   @Roles('ADMIN')
   async unblock(@Param('userID', ParseIntPipe) userID: number) {
     return await this._usersService.update(userID, {
-      status: statusEnum.enumValues[0],
+      status: UserStatusEnum.ACTIVE,
     })
   }
 

@@ -20,9 +20,7 @@ export class NotesRepository
     @Inject(DATABASE_PROVIDER_KEY)
     private readonly _database: NodePgDatabase<typeof schemas>,
   ) {}
-  findOne(noteID: number, userID?: number): Promise<Result<NotesEntity>> {
-    throw new Error('Method not implemented.')
-  }
+
   async create(
     createNoteDto: CreateNoteDto,
     userID: number,
@@ -132,7 +130,7 @@ export class NotesRepository
         ? { where: eq(schemas.notesSchema.ownerId, userID) }
         : {}),
       limit: limit,
-      offset: (page - 1) * 10,
+      offset: (page - 1) * limit,
     })
 
     return ok(

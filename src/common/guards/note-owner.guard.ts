@@ -19,6 +19,6 @@ export class NoteOwnerGuard implements CanActivate {
 
     if (foundNote.ownerID !== user.userID) return false
 
-    return false
+    return true
   }
 }
